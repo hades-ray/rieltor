@@ -1,5 +1,7 @@
 качаешь архивом, распаковываешь, закидываешь папку в C:\\xampp\htdocs\
-<img width="616" height="149" alt="image" src="https://github.com/user-attachments/assets/175b0720-acd4-48a2-a08b-365b619aad0a" /><img width="633" height="278" alt="image" src="https://github.com/user-attachments/assets/318a9ba5-06d3-439f-a228-7d834bbdab36" />
+<img width="384" height="252" alt="image" src="https://github.com/user-attachments/assets/f82c6766-ce57-4aa6-ae15-8d6898bd0476" /><img width="680" height="262" alt="image" src="https://github.com/user-attachments/assets/5b936f68-b805-4a7a-8ae8-0b3f8bb3c9e0" />
+
+
 
 
 
