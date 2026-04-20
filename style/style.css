@@ -242,7 +242,7 @@ nav a:hover {
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
+    gap: 30px;
     align-items: end;
 }
 

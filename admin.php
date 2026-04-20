@@ -103,7 +103,7 @@ if ($view === 'buyers') {
 <body>
 
 <aside class="sidebar">
-    <div class="sidebar-header">Elite Estate ADMIN</div>
+    <div class="sidebar-header">РиэлторПро</div>
     <nav class="sidebar-menu">
         <a href="admin.php?view=sellers" class="<?= $view === 'sellers' ? 'active' : '' ?>"><i class="fas fa-file-invoice"></i> Заявки продавцов</a>
         <a href="admin.php?view=buyers" class="<?= $view === 'buyers' ? 'active' : '' ?>"><i class="fas fa-shopping-cart"></i> Заявки покупателей</a>
@@ -172,8 +172,8 @@ if ($view === 'buyers') {
                     <td><span class="status-badge status-<?= ($row['status'] === 'Одобрено' ? 'approved' : ($row['status'] === 'Отменено' ? 'rejected' : 'processing')) ?>"><?= $row['status'] ?></span></td>
                     <td>
                         <?php if($row['status'] === 'В обработке'): ?>
-                            <a href="admin.php?view=<?= $view ?>&action=approve&id=<?= $row['id'] ?>&type=<?= ($view === 'buyers' ? 'buyer' : 'seller') ?>" class="btn-action btn-approve"><i class="fas fa-check"></i></a>
-                            <a href="admin.php?view=<?= $view ?>&action=reject&id=<?= $row['id'] ?>&type=<?= ($view === 'buyers' ? 'buyer' : 'seller') ?>" class="btn-action btn-reject"><i class="fas fa-times"></i></a>
+                            <a href="admin.php?view=<?= $view ?>&action=approve&id=<?= $row['id'] ?>&type=<?= ($view === 'buyers' ? 'buyer' : 'seller') ?>" class="btn-action btn-approve" style="text-decoration: none; color: green; padding-right: 30px"><i class="fas fa-check"></i></a>
+                            <a href="admin.php?view=<?= $view ?>&action=reject&id=<?= $row['id'] ?>&type=<?= ($view === 'buyers' ? 'buyer' : 'seller') ?>" class="btn-action btn-reject" style="text-decoration: none; color: red;"><i class="fas fa-times"></i></a>
                         <?php endif; ?>
                     </td>
                 </tr>

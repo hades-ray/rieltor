@@ -2,19 +2,37 @@
 session_start();
 require_once 'db.php'; 
 
-// Логика фильтрации (базовый пример)
+// 1. Получаем список уникальных районов из базы для фильтра
+$stmt_districts = $pdo->query("SELECT DISTINCT district FROM properties ORDER BY district ASC");
+$all_districts = $stmt_districts->fetchAll(PDO::FETCH_COLUMN);
+
+// 2. Получаем список уникального количества комнат для фильтра
+$stmt_rooms = $pdo->query("SELECT DISTINCT rooms FROM properties ORDER BY rooms ASC");
+$all_rooms = $stmt_rooms->fetchAll(PDO::FETCH_COLUMN);
+
+// 3. Логика фильтрации
 $where = [];
 $params = [];
 
+// Фильтр по цене
 if (!empty($_GET['price_to'])) {
     $where[] = "price <= ?";
     $params[] = $_GET['price_to'];
 }
+
+// Фильтр по комнатам
 if (!empty($_GET['rooms'])) {
     $where[] = "rooms = ?";
     $params[] = $_GET['rooms'];
 }
 
+// Фильтр по району
+if (!empty($_GET['district'])) {
+    $where[] = "district = ?";
+    $params[] = $_GET['district'];
+}
+
+// Сборка SQL запроса
 $sql = "SELECT * FROM properties";
 if ($where) {
     $sql .= " WHERE " . implode(" AND ", $where);
@@ -65,20 +83,26 @@ $items = $stmt->fetchAll();
             <input type="number" name="price_to" placeholder="10 000 000" value="<?php echo $_GET['price_to'] ?? ''; ?>">
         </div>
         <div>
-            <label>Комнат</label>
+            <label>Количество комнат</label>
             <select name="rooms">
                 <option value="">Любое</option>
-                <option value="1">1-к квартира</option>
-                <option value="2">2-к квартира</option>
-                <option value="3">3-к квартира</option>
+                <?php foreach ($all_rooms as $room_val): ?>
+                    <option value="<?= $room_val ?>" <?= (isset($_GET['rooms']) && $_GET['rooms'] == $room_val) ? 'selected' : '' ?>>
+                        <?= $room_val ?>-к квартира
+                    </option>
+                <?php endforeach; ?>
             </select>
         </div>
+
         <div>
-            <label>Район</label>
+            <label>Район города</label>
             <select name="district">
                 <option value="">Все районы</option>
-                <option>Центральный</option>
-                <option>Приморский</option>
+                <?php foreach ($all_districts as $dist): ?>
+                    <option value="<?= htmlspecialchars($dist) ?>" <?= (isset($_GET['district']) && $_GET['district'] == $dist) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($dist) ?>
+                    </option>
+                <?php endforeach; ?>
             </select>
         </div>
         <div>
@@ -89,39 +113,41 @@ $items = $stmt->fetchAll();
                 <option value="area">По площади</option>
             </select>
         </div>
-        <button type="submit" class="btn-search" style="padding: 10px;">Применить</button>
+        <div style="display: flex; gap: 5px;">
+            <button type="submit" class="btn-search" style="flex-grow: 1; padding: 7px;">Применить</button>
+            <a href="catalog.php" class="btn-search" style="background:#95a5a6; padding: 7px 15px; text-decoration:none; text-align:center;"><i class="fas fa-sync-alt"></i></a>
+        </div>
     </form>
 
     <!-- Сетка объектов -->
     <div class="properties-grid">
         <?php if (empty($items)): ?>
-            <p>Ничего не найдено по вашим параметрам.</p>
+            <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                <i class="fas fa-search" style="font-size: 40px; color: #ccc;"></i>
+                <p>К сожалению, по вашим параметрам ничего не найдено.</p>
+                <a href="catalog.php" style="color: var(--primary-color);">Сбросить фильтры</a>
+            </div>
         <?php endif; ?>
 
         <?php foreach ($items as $item): ?>
             <div class="property-card">
                 <div class="property-img" style="background-image: url('img/objects/<?php echo $item['image_url']; ?>');">
-                    <div class="property-price"><?php echo number_format($item['price'], 0, '', ' '); ?> ₽</div>
+                    <div class="property-price"><?= number_format($item['price'], 0, '', ' ') ?> ₽</div>
                 </div>
                 <div class="property-info">
-                    <h3><?php echo htmlspecialchars($item['title']); ?></h3>
-                    <span class="property-address"><i class="fas fa-map-marker-alt"></i> <?php echo $item['district']; ?> район</span>
-
-                    <div class="price-sq">
-                        <?php echo number_format($item['price'] / $item['area'], 0, '', ' '); ?> ₽ за м²
-                    </div>
+                    <h3><?= htmlspecialchars($item['title']) ?></h3>
+                    <span class="property-address"><i class="fas fa-map-marker-alt"></i> <?= htmlspecialchars($item['district']) ?></span>
+                    
+                    <div class="price-sq"><?= number_format($item['price'] / $item['area'], 0, '', ' ') ?> ₽ за м²</div>
 
                     <div class="property-stats">
-                        <div class="stat-item"><i class="fas fa-door-open"></i> <?php echo $item['rooms']; ?> комн.</div>
-                        <div class="stat-item"><i class="fas fa-expand-arrows-alt"></i> <?php echo $item['area']; ?> м²</div>
-                        <div class="stat-item"><i class="fas fa-layer-group"></i> <?php echo $item['floor']; ?> эт.</div>
+                        <div class="stat-item"><i class="fas fa-door-open"></i> <?= $item['rooms'] ?> комн.</div>
+                        <div class="stat-item"><i class="fas fa-expand-arrows-alt"></i> <?= $item['area'] ?> м²</div>
+                        <div class="stat-item"><i class="fas fa-layer-group"></i> <?= $item['floor'] ?> эт.</div>
                     </div>
-
-                    <!-- Контейнер, который прижмет кнопку к низу -->
+                    
                     <div class="btn-view-container">
-                        <a href="property.php?id=<?php echo $item['id']; ?>" class="btn-submit" style="display: block; text-decoration: none; text-align: center;">
-                            Посмотреть
-                        </a>
+                        <a href="property.php?id=<?= $item['id'] ?>" class="btn-submit" style="display: block; text-decoration: none; text-align: center;">Посмотреть</a>
                     </div>
                 </div>
             </div>

@@ -21,16 +21,27 @@ require_once 'db.php';
         <a href="catalog.php">Каталог</a>
         <a href="services.php">Услуги</a>
         <a href="about.php">О компании</a>
+        
         <?php if (isset($_SESSION['user_id'])): ?>
-            <!-- Если пользователь вошел -->
-            <span style="margin-left: 15px; font-weight: bold;">
+            <!-- БЛОК ДЛЯ АВТОРИЗОВАННЫХ -->
+            
+            <?php if ($_SESSION['role'] === 'admin'): ?>
+                <!-- ССЫЛКА ТОЛЬКО ДЛЯ АДМИНА -->
+                <a href="admin.php" style="color: var(--accent-color); font-weight: bold;">
+                    <i class="fas fa-shield-alt"></i> Админ-панель
+                </a>
+            <?php endif; ?>
+
+            <span style="margin-left: 15px; font-weight: bold; color: var(--primary-color);">
                 <i class="fas fa-user-circle"></i> <?php echo htmlspecialchars($_SESSION['username']); ?>
             </span>
+            
             <a href="logout.php" class="btn-profile" style="background: var(--accent-color);">
                 <i class="fas fa-sign-out-alt"></i> Выйти
             </a>
+
         <?php else: ?>
-            <!-- Если пользователь НЕ вошел -->
+            <!-- БЛОК ДЛЯ ГОСТЕЙ -->
             <a href="login.php" class="btn-profile">
                 <i class="fas fa-user"></i> Профиль
             </a>
