@@ -45,8 +45,8 @@ $items = $stmt->fetchAll();
     <a href="index.php" class="logo">РиэлторПро</a>
     <nav>
         <a href="catalog.php">Каталог</a>
-        <a href="#services">Услуги</a>
-        <a href="#about">О компании</a>
+        <a href="services.php">Услуги</a>
+        <a href="about.php">О компании</a>
         <?php if (isset($_SESSION['user_id'])): ?>
             <a href="logout.php" class="btn-profile" style="background: var(--accent-color);">Выйти</a>
         <?php else: ?>
@@ -100,7 +100,7 @@ $items = $stmt->fetchAll();
 
         <?php foreach ($items as $item): ?>
             <div class="property-card">
-                <div class="property-img" style="background-image: url('<?php echo $item['image_url']; ?>');">
+                <div class="property-img" style="background-image: url('img/objects/<?php echo $item['image_url']; ?>');">
                     <div class="property-price"><?php echo number_format($item['price'], 0, '', ' '); ?> ₽</div>
                 </div>
                 <div class="property-info">
